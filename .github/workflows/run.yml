@@ -15,21 +15,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Checkout codes'
-      uses: actions/checkout@v2
-    - name: 'Find latest Python version'
-      id: find-python-version
-      run: |
-        latest_version=$(curl -s https://www.python.org/downloads/ | grep -Eo 'Python [0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | awk '{print $2}')
-          
-        echo "Latest Python version is $latest_version"
-          
-        echo "::set-output name=python-version::$latest_version"
-      shell: bash
-    - name: 'Set up Python'
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.11
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ steps.find-python-version.outputs.python-version }}
+          python-version: '3.11'
     - name: 签到
       run: |
         # echo ${{github.event.sender.id}}
