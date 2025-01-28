@@ -16,12 +16,22 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !github.event.sender.id || github.event.repository.owner.id == github.event.sender.id }}
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: 初始化Python
+  steps:
+    - name: 'Checkout codes'
+      uses: actions/checkout@v2
+    - name: 'Find latest Python version'
+      id: find-python-version
+      run: |
+        latest_version=$(curl -s https://www.python.org/downloads/ | grep -Eo 'Python [0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | awk '{print $2}')
+          
+        echo "Latest Python version is $latest_version"
+          
+        echo "::set-output name=python-version::$latest_version"
+      shell: bash
+    - name: 'Set up Python'
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9.17
+        python-version: ${{ steps.find-python-version.outputs.python-version }}
     - name: 签到
       run: |
         # echo ${{github.event.sender.id}}
